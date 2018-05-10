@@ -16,8 +16,9 @@
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
-            <id>clips-public-repo</id>
-            <url>http://repo.extendedclip.com/content/repositories/public/</url>
+            <id>Staartvin's Repository</id>
+            <name>Staartvin's Repository-releases</name>
+            <url>http://62.131.38.74:8081/artifactory/ext-release-local</url>
         </repository>
     </repositories>
     
@@ -35,10 +36,9 @@
          <scope>provided</scope>
         </dependency>
         <dependency>
-         <groupId>me.armar.plugins</groupId>
-          <artifactId>autorank</artifactId>
-          <version>4.1</version>
-         <scope>provided</scope>
+            <groupId>Autorank</groupId>
+            <artifactId>Autorank</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
     
