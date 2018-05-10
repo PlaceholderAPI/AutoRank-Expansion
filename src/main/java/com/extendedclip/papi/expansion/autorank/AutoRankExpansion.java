@@ -22,109 +22,118 @@ package com.extendedclip.papi.expansion.autorank;
 
 import me.armar.plugins.autorank.Autorank;
 import me.armar.plugins.autorank.api.API;
+import me.armar.plugins.autorank.pathbuilder.Path;
 import me.armar.plugins.autorank.util.AutorankTools;
 import me.armar.plugins.autorank.util.AutorankTools.Time;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.util.TimeUtil;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+import java.util.UUID;
+
 public class AutoRankExpansion extends PlaceholderExpansion {
 
-	private API autorank;
-	
-	@Override
-	public boolean canRegister() {
-		return Bukkit.getPluginManager().getPlugin(getPlugin()) != null;
-	}
-	
-	@Override
-	public boolean register() {
-		
-		Autorank ar = (Autorank) Bukkit.getPluginManager().getPlugin(getPlugin());
-		
-		if (ar != null) {
-			
-			autorank = ar.getAPI();
-			
-			if (autorank == null) {
-				return false;
-			}
-		}
-		
-		return PlaceholderAPI.registerPlaceholderHook(getIdentifier(), this);
-	}
+    private API autorank;
 
-	@Override
-	public String getAuthor() {
-		return "clip";
-	}
+    @Override
+    public boolean canRegister() {
+        return Bukkit.getPluginManager().getPlugin(getPlugin()) != null;
+    }
 
-	@Override
-	public String getIdentifier() {
-		return "autorank";
-	}
+    @Override
+    public boolean register() {
 
-	@Override
-	public String getPlugin() {
-		return "Autorank";
-	}
+        Autorank ar = (Autorank) Bukkit.getPluginManager().getPlugin(getPlugin());
 
-	@Override
-	public String getVersion() {
-		return "1.0.2";
-	}
-	
-	
+        // Autorank is not present.
+        if (ar == null) {
+            return false;
+        }
 
-	@Override
-	public String onPlaceholderRequest(Player p, String identifier) {
+        autorank = ar.getAPI();
 
-		if (autorank == null || p == null) {
-			return "";
-		}
-		
-		switch(identifier) {
-		
-		case "active_path":
-			return autorank.getActivePath(p.getUniqueId()) != null ? autorank.getActivePath(p.getUniqueId()).getDisplayName() : "";
-		case "time_of_player":
-			return String.valueOf(autorank.getTimeOfPlayer(p));
-		case "time_of_player_formatted":
-			return TimeUtil.getTime(autorank.getTimeOfPlayer(p));
-		case "local_time":
-			String localTime = AutorankTools.timeToString(autorank.getLocalPlayTime(p.getUniqueId()), Time.MINUTES);
-			return localTime != null ? localTime : ""; 
-		case "local_time_formatted":
-			String localTimeFormatted = AutorankTools.timeToString(autorank.getLocalPlayTime(p.getUniqueId()), Time.SECONDS);
-			if (localTimeFormatted == null) {
-				return "";
-			}
-			try {
-				int t = Integer.parseInt(localTimeFormatted);
-				return TimeUtil.getTime(t);
-			} catch (NumberFormatException ex) {
-				return "";
-			}
-		case "global_time":
-			String globalTime = AutorankTools.timeToString(autorank.getGlobalPlayTime(p.getUniqueId()), Time.MINUTES);
-			return globalTime != null ? globalTime : ""; 
-		case "global_time_formatted":
-			String globalTimeFormatted = AutorankTools.timeToString(autorank.getGlobalPlayTime(p.getUniqueId()), Time.SECONDS);
-			if (globalTimeFormatted == null) {
-				return "";
-			}
-			try {
-				int t = Integer.parseInt(globalTimeFormatted);
-				return TimeUtil.getTime(t);
-			} catch (NumberFormatException ex) {
-				return "";
-			}
-		}
-	
-		return null;
-	
-	}	
+        if (autorank == null) {
+            return false;
+        }
+
+
+        return PlaceholderAPI.registerPlaceholderHook(getIdentifier(), this);
+    }
+
+    @Override
+    public String getAuthor() {
+        return "Clip & Staartvin";
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "autorank";
+    }
+
+    @Override
+    public String getPlugin() {
+        return "Autorank";
+    }
+
+    @Override
+    public String getVersion() {
+        return "1.0.3";
+    }
+
+
+    @Override
+    public String onPlaceholderRequest(Player p, String identifier) {
+
+        if (autorank == null || p == null) {
+            return "";
+        }
+
+        UUID uuid = p.getUniqueId();
+
+        switch (identifier) {
+
+            case "active_path":
+
+                List<Path> activePaths = autorank.getActivePaths(uuid);
+
+                if (!activePaths.isEmpty()) {
+                    return autorank.getActivePaths(uuid).get(0).getDisplayName();
+                }
+
+                return "";
+            case "time_of_player":
+                return String.valueOf(autorank.getTimeOfPlayer(p));
+            case "time_of_player_formatted":
+                return TimeUtil.getTime(autorank.getTimeOfPlayer(p));
+            case "local_time":
+                return AutorankTools.timeToString(autorank.getLocalPlayTime(p.getUniqueId()), Time.MINUTES);
+            case "local_time_formatted":
+                String localTimeFormatted = AutorankTools.timeToString(autorank.getLocalPlayTime(p.getUniqueId()),
+						Time.SECONDS);
+                try {
+                    int t = Integer.parseInt(localTimeFormatted);
+                    return TimeUtil.getTime(t);
+                } catch (NumberFormatException ex) {
+                    return "";
+                }
+            case "global_time":
+                return AutorankTools.timeToString(autorank.getGlobalPlayTime(p.getUniqueId()), Time
+						.MINUTES);
+            case "global_time_formatted":
+                String globalTimeFormatted = AutorankTools.timeToString(autorank.getGlobalPlayTime(p.getUniqueId()), Time.SECONDS);
+
+                try {
+                    int t = Integer.parseInt(globalTimeFormatted);
+                    return TimeUtil.getTime(t);
+                } catch (NumberFormatException ex) {
+                    return "";
+                }
+        }
+
+        return null;
+
+    }
 }
