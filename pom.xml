@@ -16,9 +16,9 @@
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
-            <id>Staartvin's Repository</id>
-            <name>Staartvin's Repository-releases</name>
-            <url>http://62.131.38.74:8081/artifactory/ext-release-local</url>
+            <id>staartvin-repo</id>
+            <name>jenkins-artifactory-releases</name>
+            <url>http://staartvin.com:8081/artifactory/libs-release-local</url>
         </repository>
     </repositories>
     
@@ -36,9 +36,9 @@
          <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>Autorank</groupId>
+            <groupId>me.staartvin.plugins</groupId>
             <artifactId>Autorank</artifactId>
-            <version>LATEST</version>
+            <version>4.3.3</version>
         </dependency>
     </dependencies>
     

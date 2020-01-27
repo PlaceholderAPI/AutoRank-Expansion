@@ -22,17 +22,17 @@ package com.extendedclip.papi.expansion.autorank;
 
 import me.armar.plugins.autorank.Autorank;
 import me.armar.plugins.autorank.api.API;
-import me.armar.plugins.autorank.pathbuilder.Path;
+import me.armar.plugins.autorank.storage.TimeType;
 import me.armar.plugins.autorank.util.AutorankTools;
-import me.armar.plugins.autorank.util.AutorankTools.Time;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import me.clip.placeholderapi.util.TimeUtil;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class AutoRankExpansion extends PlaceholderExpansion {
 
@@ -80,7 +80,7 @@ public class AutoRankExpansion extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.3";
+        return "1.1";
     }
 
 
@@ -95,42 +95,94 @@ public class AutoRankExpansion extends PlaceholderExpansion {
 
         switch (identifier) {
 
-            case "active_path":
-
-                List<Path> activePaths = autorank.getActivePaths(uuid);
-
-                if (!activePaths.isEmpty()) {
-                    return autorank.getActivePaths(uuid).get(0).getDisplayName();
-                }
-
-                return "";
-            case "time_of_player":
-                return String.valueOf(autorank.getTimeOfPlayer(p));
-            case "time_of_player_formatted":
-                return TimeUtil.getTime(autorank.getTimeOfPlayer(p));
-            case "local_time":
-                return AutorankTools.timeToString(autorank.getLocalPlayTime(p.getUniqueId()), Time.MINUTES);
-            case "local_time_formatted":
-                String localTimeFormatted = AutorankTools.timeToString(autorank.getLocalPlayTime(p.getUniqueId()),
-						Time.SECONDS);
+            case "total_time_of_player":
                 try {
-                    int t = Integer.parseInt(localTimeFormatted);
-                    return TimeUtil.getTime(t);
-                } catch (NumberFormatException ex) {
-                    return "";
+                    return autorank.getPlayTime(TimeType.TOTAL_TIME, uuid, TimeUnit.MINUTES).get().toString();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "total_time_of_player_formatted":
+                try {
+                    int minutesPlayed = Math.toIntExact(autorank.getPlayTime(TimeType.TOTAL_TIME, uuid,
+                            TimeUnit.MINUTES).get());
+                    return AutorankTools.timeToString(minutesPlayed, TimeUnit.MINUTES);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "daily_time_of_player":
+                try {
+                    return autorank.getPlayTime(TimeType.DAILY_TIME, uuid, TimeUnit.MINUTES).get().toString();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "daily_time_of_player_formatted":
+                try {
+                    int minutesPlayed = Math.toIntExact(autorank.getPlayTime(TimeType.DAILY_TIME, uuid,
+                            TimeUnit.MINUTES).get());
+                    return AutorankTools.timeToString(minutesPlayed, TimeUnit.MINUTES);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "weekly_time_of_player":
+                try {
+                    return autorank.getPlayTime(TimeType.WEEKLY_TIME, uuid, TimeUnit.MINUTES).get().toString();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "weekly_time_of_player_formatted":
+                try {
+                    int minutesPlayed = Math.toIntExact(autorank.getPlayTime(TimeType.WEEKLY_TIME, uuid,
+                            TimeUnit.MINUTES).get());
+                    return AutorankTools.timeToString(minutesPlayed, TimeUnit.MINUTES);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "monthly_time_of_player":
+                try {
+                    return autorank.getPlayTime(TimeType.MONTHLY_TIME, uuid, TimeUnit.MINUTES).get().toString();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "monthly_time_of_player_formatted":
+                try {
+                    int minutesPlayed = Math.toIntExact(autorank.getPlayTime(TimeType.MONTHLY_TIME, uuid,
+                            TimeUnit.MINUTES).get());
+                    return AutorankTools.timeToString(minutesPlayed, TimeUnit.MINUTES);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "local_time":
+                try {
+                    return autorank.getLocalPlayTime(p.getUniqueId()).get().toString();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "local_time_formatted":
+                try {
+                    return AutorankTools.timeToString(autorank.getLocalPlayTime(p.getUniqueId()).get(),
+                            TimeUnit.MINUTES);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
             case "global_time":
-                return AutorankTools.timeToString(autorank.getGlobalPlayTime(p.getUniqueId()), Time
-						.MINUTES);
-            case "global_time_formatted":
-                String globalTimeFormatted = AutorankTools.timeToString(autorank.getGlobalPlayTime(p.getUniqueId()), Time.SECONDS);
-
                 try {
-                    int t = Integer.parseInt(globalTimeFormatted);
-                    return TimeUtil.getTime(t);
-                } catch (NumberFormatException ex) {
-                    return "";
+                    return autorank.getGlobalPlayTime(p.getUniqueId()).get().toString();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
+            case "global_time_formatted":
+                try {
+                    return AutorankTools.timeToString(autorank.getGlobalPlayTime(p.getUniqueId()).get(),
+                            TimeUnit.MINUTES);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            case "completed_paths":
+                return StringUtils.join(autorank.getCompletedPaths(uuid), ", ");
+            case "active_paths":
+                return StringUtils.join(autorank.getActivePaths(uuid), ", ");
+            case "eligible_paths":
+                return StringUtils.join(autorank.getEligiblePaths(uuid), ", ");
         }
 
         return null;
