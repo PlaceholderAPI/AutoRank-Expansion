@@ -93,13 +93,17 @@ public class AutoRankExpansion extends PlaceholderExpansion {
 
         UUID uuid = p.getUniqueId();
 
+        boolean error = false;
+
         switch (identifier) {
 
             case "total_time_of_player":
                 try {
                     return autorank.getPlayTime(TimeType.TOTAL_TIME, uuid, TimeUnit.MINUTES).get().toString();
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "total_time_of_player_formatted":
                 try {
@@ -107,13 +111,17 @@ public class AutoRankExpansion extends PlaceholderExpansion {
                             TimeUnit.MINUTES).get());
                     return AutorankTools.timeToString(minutesPlayed, TimeUnit.MINUTES);
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "daily_time_of_player":
                 try {
                     return autorank.getPlayTime(TimeType.DAILY_TIME, uuid, TimeUnit.MINUTES).get().toString();
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "daily_time_of_player_formatted":
                 try {
@@ -121,13 +129,17 @@ public class AutoRankExpansion extends PlaceholderExpansion {
                             TimeUnit.MINUTES).get());
                     return AutorankTools.timeToString(minutesPlayed, TimeUnit.MINUTES);
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "weekly_time_of_player":
                 try {
                     return autorank.getPlayTime(TimeType.WEEKLY_TIME, uuid, TimeUnit.MINUTES).get().toString();
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "weekly_time_of_player_formatted":
                 try {
@@ -135,13 +147,17 @@ public class AutoRankExpansion extends PlaceholderExpansion {
                             TimeUnit.MINUTES).get());
                     return AutorankTools.timeToString(minutesPlayed, TimeUnit.MINUTES);
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "monthly_time_of_player":
                 try {
                     return autorank.getPlayTime(TimeType.MONTHLY_TIME, uuid, TimeUnit.MINUTES).get().toString();
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "monthly_time_of_player_formatted":
                 try {
@@ -149,33 +165,43 @@ public class AutoRankExpansion extends PlaceholderExpansion {
                             TimeUnit.MINUTES).get());
                     return AutorankTools.timeToString(minutesPlayed, TimeUnit.MINUTES);
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "local_time":
                 try {
                     return autorank.getLocalPlayTime(p.getUniqueId()).get().toString();
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "local_time_formatted":
                 try {
                     return AutorankTools.timeToString(autorank.getLocalPlayTime(p.getUniqueId()).get(),
                             TimeUnit.MINUTES);
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "global_time":
                 try {
                     return autorank.getGlobalPlayTime(p.getUniqueId()).get().toString();
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "global_time_formatted":
                 try {
                     return AutorankTools.timeToString(autorank.getGlobalPlayTime(p.getUniqueId()).get(),
                             TimeUnit.MINUTES);
                 } catch (InterruptedException | ExecutionException e) {
+                    error = true;
                     e.printStackTrace();
+                    break;
                 }
             case "completed_paths":
                 return StringUtils.join(autorank.getCompletedPaths(uuid), ", ");
@@ -185,7 +211,7 @@ public class AutoRankExpansion extends PlaceholderExpansion {
                 return StringUtils.join(autorank.getEligiblePaths(uuid), ", ");
         }
 
-        return "";
+        return error ? "" : null;
 
     }
 }
