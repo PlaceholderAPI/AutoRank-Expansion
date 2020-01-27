@@ -185,7 +185,7 @@ public class AutoRankExpansion extends PlaceholderExpansion {
                 return StringUtils.join(autorank.getEligiblePaths(uuid), ", ");
         }
 
-        return null;
+        return "";
 
     }
 }
