@@ -24,7 +24,6 @@ import me.armar.plugins.autorank.Autorank;
 import me.armar.plugins.autorank.api.API;
 import me.armar.plugins.autorank.storage.TimeType;
 import me.armar.plugins.autorank.util.AutorankTools;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -40,13 +39,13 @@ public class AutoRankExpansion extends PlaceholderExpansion {
 
     @Override
     public boolean canRegister() {
-        return Bukkit.getPluginManager().getPlugin(getPlugin()) != null;
+        return Bukkit.getPluginManager().getPlugin(getRequiredPlugin()) != null;
     }
 
     @Override
     public boolean register() {
 
-        Autorank ar = (Autorank) Bukkit.getPluginManager().getPlugin(getPlugin());
+        Autorank ar = (Autorank) Bukkit.getPluginManager().getPlugin(getRequiredPlugin());
 
         // Autorank is not present.
         if (ar == null) {
@@ -60,7 +59,7 @@ public class AutoRankExpansion extends PlaceholderExpansion {
         }
 
 
-        return PlaceholderAPI.registerPlaceholderHook(getIdentifier(), this);
+        return super.register();
     }
 
     @Override
@@ -74,13 +73,13 @@ public class AutoRankExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String getPlugin() {
+    public String getRequiredPlugin() {
         return "Autorank";
     }
 
     @Override
     public String getVersion() {
-        return "1.1.0";
+        return "1.1.1";
     }
 
 
